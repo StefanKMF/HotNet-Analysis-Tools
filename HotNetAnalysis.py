@@ -31,7 +31,17 @@ def getSubnetworks(filename): #Takes in a file and returns a Dict containinng al
     return Networks
 
 def setdiff(Alpha, Beta): #Takes two Dict containg subnetworks and returns the exclusive subnetworks in Alpha.
-    return 0
+    exclusiveNetworks = {}
+
+    for x in Alpha:
+        isExclusive = 1
+        for y in Beta:
+            if sorted(Alpha[x]) == sorted(Beta[y]):
+                isExclusive = 1
+        if isExclusive == 1:
+            exclusiveNetworks[x] = Alpha[x]
+
+    return exclusiveNetworks
 
 def main():
     Tk().withdraw()
@@ -39,7 +49,7 @@ def main():
     Alpha = getSubnetworks(resultsOne)
 
     for sub in Alpha:
-        print Alpha[sub]
+        print sorted(Alpha[sub])
 
 if __name__ == '__main__':
     main()
