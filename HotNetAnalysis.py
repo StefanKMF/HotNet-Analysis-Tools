@@ -5,6 +5,7 @@ from Tkinter import Tk
 from tkFileDialog import askopenfilename
 from pprint import pprint
 
+File1 = ""
 
 
 def getSubnetworks(filename): #Takes in a file and returns a Dict containinng all the subnetworks in the JSON file.
@@ -60,25 +61,36 @@ def setdiff(Alpha, Beta, tolerance = 1.0): #Takes two Dict containg subnetworks 
     return exclusiveNetworks
 
 def returnSymbol(Genes): #Takes in a list of Genes, returning a + or - value depending on if the Gene experience in increase or decrease of methylation levels.
+    return NULL
+
+def startMenu():
+    input = 0
+    while input != '4':
+        print "1. Select a JSON File" + "\n" +"2. Select a 2nd JSON File" + "\n" + "3. Search for a Gene(s)" + "\n" + "4. Exit"
+        input = raw_input("")
+        if input == '3':
+            temp = raw_input("Enter a List of Genes to Search" + "\n")
+            #genes = map(str, temp.split())
+            genes = 'MLC1'
+            #print genes
+            subnetworks = findSubnetworksByGene(genes, File1)
+            for x in subnetworks:
+                print subnetworks[x]
 
 
 def main():
+
+
+
     Tk().withdraw()
-    File1 = askopenfilename(title="First Result File to compare.",defaultextension=".json")
+    global File1
+    File1 = askopenfilename(title="First JSON File.",defaultextension=".json")
     #File2 = askopenfilename(title="Second Result File to compare.",defaultextension=".json")
 
     Alpha = getSubnetworks(File1)
     #Beta = getSubnetworks(File2)
 
-    #Alpha['unique'] = 'NOT IN THE SET'
-
-    temp =findSubnetworksByGene(['CCR8','MS4A2'],Alpha)
-    for x in temp:
-        print temp[x]
-
-
-    #print Beta
-    #print findSubnetworksByGene('AMDHD2',Alpha)
+    startMenu()
 
 if __name__ == '__main__':
     main()
