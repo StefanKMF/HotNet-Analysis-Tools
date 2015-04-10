@@ -1,6 +1,8 @@
 #Currently works by comparing the gene sets, doesn't compare the graphes as of yet. Graph comparsion will be a future addition.
 
 import json, difflib
+import networkx as nx
+import matplotlib.pyplot as plt
 from Tkinter import Tk
 from tkFileDialog import askopenfilename
 from pprint import pprint
@@ -12,7 +14,9 @@ def getSubnetworks(filename): #Takes in a file and returns a Dict containinng al
     json_data = open(filename)
     data = json.load(json_data)
     Networks = {}
+    Edges = {}
     SubNetworkCounter = 0
+    EdgeCounter = 0
 
 
     for row in data['subnetworks']:
@@ -20,10 +24,21 @@ def getSubnetworks(filename): #Takes in a file and returns a Dict containinng al
             for y in data['subnetworks'][row][x]:
                 if y =='nodes':
                     substring = []
+                    edges = []
                     for z in data['subnetworks'][row][x][y]:
                         substring.append(str(z['name']))
-                    Networks[('Subnetwork' + str(SubNetworkCounter))] = substring
+                    for z in data['subnetworks'][row][x]['edges']:
+                        edges.append((str(z['source']),str(z['target'])))
+
+                    tupleA = substring
+                    Networks[('Subnetwork' + str(SubNetworkCounter))] = (substring, edges)
                     SubNetworkCounter += 1
+                # if y =='edges':
+                #     edges = []
+                #     for z in data['subnetworks'][row][x][y]:
+                #         edges.append((str(z['source']),str(z['target'])))
+                #     Edges[('Subnetwork' + str(EdgeCounter))] = edges
+                #     EdgeCounter += 1
 
     json_data.close()
 
@@ -66,16 +81,16 @@ def returnSymbol(Genes): #Takes in a list of Genes, returning a + or - value dep
 def startMenu():
     input = 0
     while input != '4':
-        print "1. Select a JSON File" + "\n" +"2. Select a 2nd JSON File" + "\n" + "3. Search for a Gene(s)" + "\n" + "4. Exit"
+        print "\n" + "1. Select a JSON File" + "\n" +"2. Select a 2nd JSON File" + "\n" + "3. Search for a Gene(s)" + "\n" + "4. Exit"
         input = raw_input("")
         if input == '3':
             temp = raw_input("Enter a List of Genes to Search" + "\n")
-            #genes = map(str, temp.split())
-            genes = 'MLC1'
+            genes = map(str, temp.split())
             #print genes
-            subnetworks = findSubnetworksByGene(genes, File1)
-            for x in subnetworks:
-                print subnetworks[x]
+            subnetworks = getSubnetworks(File1)
+            results = findSubnetworksByGene(genes, subnetworks)
+            for x in results:
+                print results[x]
 
 
 def main():
@@ -90,7 +105,27 @@ def main():
     Alpha = getSubnetworks(File1)
     #Beta = getSubnetworks(File2)
 
-    startMenu()
+    #for x in Alpha:
+    x = 'Subnetwork450'
+    G = nx.Graph()
+    print "\n" + x
+    (nodes, edges) = Alpha[x]
+
+    #for node in nodes:
+    for x in nodes:
+        print x
+    G.add_nodes_from(nodes)
+    G.add_edges_from(edges)
+
+    #node_labels = {node:node for node in G.nodes()};
+    #pos = nx.spring_layout(G)
+    #nx.draw_networkx_labels(G, pos, labels=node_labels)
+    nx.draw(G)
+    plt.show()
+
+        #print Alpha[x]
+        #print "--"*10
+    #startMenu()
 
 if __name__ == '__main__':
     main()
