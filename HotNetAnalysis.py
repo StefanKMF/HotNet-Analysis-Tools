@@ -6,33 +6,31 @@ from pprint import pprint
 
 Tk().withdraw()
 resultsOne = askopenfilename(title="First Result File to compare",defaultextension=".json")
-resultsTwo = askopenfilename(title="Second Result File to compare",defaultextension=".json")
+#resultsTwo = askopenfilename(title="Second Result File to compare",defaultextension=".json")
 
-if resultsOne == resultsTwo:
-    print "Error, files identical"
+#if resultsOne == resultsTwo:
+#    print "Error, files identical"
+
+def getSubnetworks(filename): #Takes in a file and returns a Dict containinng all the subnetworks in the JSON file.
+    json_data = open(filename)
+    data = json.load(json_data)
+    Networks = {}
+    SubNetworkCounter = 0
 
 
-json_data=open('subnetworks.json')
+    for row in data['subnetworks']:
+        for x in xrange(len(data['subnetworks'][row])):
+            for y in data['subnetworks'][row][x]:
+                if y =='nodes':
+                    substring = []
+                    for z in data['subnetworks'][row][x][y]:
+                        substring.append(str(z['name']))
+                    Networks[('Subnetwork' + str(SubNetworkCounter))] = substring
+                    SubNetworkCounter += 1
 
-data = json.load(json_data)
-SubgraphCounter = 0;
-nonMalig = {}
+    json_data.close()
 
-for row in data['subnetworks']:
-    #print row, len(data['subnetworks'][row])
-    for x in xrange(len(data['subnetworks'][row])):
-        #print len(data['subnetworks'][row][x])
-        for y in data['subnetworks'][row][x]:
-            if y =='nodes':
-                substring = []
-                for z in data['subnetworks'][row][x][y]:
-                    substring.append(str(z['name']))
-                nonMalig[str(row)] = substring
-                #("Subgraph_" + str(SubgraphCounter)) = Subgraph('Test',substring)
-                #SubgraphCounter += 1
-
-json_data.close()
-print nonMalig
+    return Networks
 
 
 class Subgraph():
