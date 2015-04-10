@@ -30,7 +30,7 @@ def getSubnetworks(filename): #Takes in a file and returns a Dict containinng al
 
     return Networks
 
-def findSubnetworkByGene(Gene, SubNetworks ): #Takes in a Gene name and a Subnetwork Dictionary, returns all subnetworks containing the gene.
+def findSubnetworksByGene(Gene, SubNetworks ): #Takes in a Gene name and a Subnetwork Dictionary, returns all subnetworks containing the gene.
     inSubNetworks = {}
 
     for x in SubNetworks:
@@ -39,6 +39,8 @@ def findSubnetworkByGene(Gene, SubNetworks ): #Takes in a Gene name and a Subnet
 
     return inSubNetworks
 
+
+def percentSimilarity(Subnetwork1,Subnetwork2): #Returns the percent similarity between two subnetworks.
 
 def setdiff(Alpha, Beta): #Takes two Dict containg subnetworks and returns the exclusive subnetworks in Alpha.
     exclusiveNetworks = {}
@@ -57,17 +59,14 @@ def setdiff(Alpha, Beta): #Takes two Dict containg subnetworks and returns the e
 def main():
     Tk().withdraw()
     File1 = askopenfilename(title="First Result File to compare",defaultextension=".json")
-    File2 = askopenfilename(title="First Result File to compare",defaultextension=".json")
+    #File2 = askopenfilename(title="First Result File to compare",defaultextension=".json")
 
     Alpha = getSubnetworks(File1)
     Beta = getSubnetworks(File2)
 
     Alpha['unique'] = 'NOT IN THE SET'
-    Exc1 = setdiff(Alpha,Beta)
 
-
-    print len(Exc1)
-    print Exc1
+    print (findSubnetworksByGene('MYBPC3',Alpha))
 
 if __name__ == '__main__':
     main()
