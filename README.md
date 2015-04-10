@@ -1,1 +1,6 @@
-# CISC499
+# HotNet Analysis Tools
+
+
+#DEPENDENCIES
+ * Pythion 2.7
+ * NetworkX
