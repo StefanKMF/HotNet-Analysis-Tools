@@ -33,7 +33,7 @@ def findSubnetworksByGene(Genes, SubNetworks ): #Takes in a Gene name and a Subn
 
     for x in SubNetworks:
         if isinstance(Genes, str): #Check if single Gene is and subnetwork and return Subnetwork if True.
-            if Gene in SubNetworks[x]:
+            if Genes in SubNetworks[x]:
                 inSubNetworks[x] = SubNetworks[x]
         elif isinstance(Genes, list): #Check if all Genes are in subnetwork and return Subnetwork if True.
             if all(gene in SubNetworks[x] for gene in Genes):
@@ -59,19 +59,26 @@ def setdiff(Alpha, Beta, tolerance = 1.0): #Takes two Dict containg subnetworks 
 
     return exclusiveNetworks
 
+def returnSymbol(Genes): #Takes in a list of Genes, returning a + or - value depending on if the Gene experience in increase or decrease of methylation levels.
+
 
 def main():
     Tk().withdraw()
     File1 = askopenfilename(title="First Result File to compare.",defaultextension=".json")
-    File2 = askopenfilename(title="Second Result File to compare.",defaultextension=".json")
+    #File2 = askopenfilename(title="Second Result File to compare.",defaultextension=".json")
 
     Alpha = getSubnetworks(File1)
-    Beta = getSubnetworks(File2)
+    #Beta = getSubnetworks(File2)
 
-    Alpha['unique'] = 'NOT IN THE SET'
+    #Alpha['unique'] = 'NOT IN THE SET'
+
+    temp =findSubnetworksByGene(['CCR8','MS4A2'],Alpha)
+    for x in temp:
+        print temp[x]
+
 
     #print Beta
-    print findSubnetworksByGene('AMDHD2',Alpha)
+    #print findSubnetworksByGene('AMDHD2',Alpha)
 
 if __name__ == '__main__':
     main()
