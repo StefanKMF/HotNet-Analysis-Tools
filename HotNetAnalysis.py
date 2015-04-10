@@ -1,8 +1,6 @@
 #Currently works by comparing the gene sets, doesn't compare the graphes as of yet. Graph comparsion will be a future addition.
 
-
-
-import json
+import json, difflib
 from Tkinter import Tk
 from tkFileDialog import askopenfilename
 from pprint import pprint
@@ -30,27 +28,33 @@ def getSubnetworks(filename): #Takes in a file and returns a Dict containinng al
 
     return Networks
 
-def findSubnetworksByGene(Gene, SubNetworks ): #Takes in a Gene name and a Subnetwork Dictionary, returns all subnetworks containing the gene.
+def findSubnetworksByGene(Genes, SubNetworks ): #Takes in a Gene name and a Subnetwork Dictionary, returns all subnetworks containing the gene.
     inSubNetworks = {}
 
     for x in SubNetworks:
-        if Gene in SubNetworks[x]:
-            inSubNetworks[x] = SubNetworks[x]
+        if isinstance(Genes, str): #Check if single Gene is and subnetwork and return Subnetwork if True.
+            if Gene in SubNetworks[x]:
+                inSubNetworks[x] = SubNetworks[x]
+        elif isinstance(Genes, list): #Check if all Genes are in subnetwork and return Subnetwork if True.
+            if all(gene in SubNetworks[x] for gene in Genes):
+                inSubNetworks[x] = SubNetworks[x]
 
     return inSubNetworks
 
 
 def percentSimilarity(Subnetwork1,Subnetwork2): #Returns the percent similarity between two subnetworks.
+    sm = diffib.SequenceMatcher(None, Subnetwork1,Subnetwork2)
+    return sm.ratio()
 
-def setdiff(Alpha, Beta): #Takes two Dict containg subnetworks and returns the exclusive subnetworks in Alpha.
+def setdiff(Alpha, Beta, tolerance = 1.0): #Takes two Dict containg subnetworks and returns the exclusive subnetworks in Alpha.
     exclusiveNetworks = {}
 
     for x in Alpha:
-        isExclusive = 1
+        isExclusive = True
         for y in Beta:
-            if sorted(Alpha[x]) == sorted(Beta[y]):
-                isExclusive = 0
-        if isExclusive == 1:
+            if (percentSimilarity(sorted(Alpha[x]),sorted(Beta[y])) >= tolerance):
+                isExclusive = False
+        if isExclusive == True:
             exclusiveNetworks[x] = Alpha[x]
 
     return exclusiveNetworks
@@ -58,15 +62,16 @@ def setdiff(Alpha, Beta): #Takes two Dict containg subnetworks and returns the e
 
 def main():
     Tk().withdraw()
-    File1 = askopenfilename(title="First Result File to compare",defaultextension=".json")
-    #File2 = askopenfilename(title="First Result File to compare",defaultextension=".json")
+    File1 = askopenfilename(title="First Result File to compare.",defaultextension=".json")
+    File2 = askopenfilename(title="Second Result File to compare.",defaultextension=".json")
 
     Alpha = getSubnetworks(File1)
     Beta = getSubnetworks(File2)
 
     Alpha['unique'] = 'NOT IN THE SET'
 
-    print (findSubnetworksByGene('MYBPC3',Alpha))
+    #print Beta
+    print findSubnetworksByGene('AMDHD2',Alpha)
 
 if __name__ == '__main__':
     main()
