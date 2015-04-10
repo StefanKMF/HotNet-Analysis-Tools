@@ -1,13 +1,13 @@
+#Currently works by comparing the gene sets, doesn't compare the graphes as of yet. Graph comparsion will be a future addition.
+
+
+
 import json
 from Tkinter import Tk
 from tkFileDialog import askopenfilename
 from pprint import pprint
 
 
-#resultsTwo = askopenfilename(title="Second Result File to compare",defaultextension=".json")
-
-#if resultsOne == resultsTwo:
-#    print "Error, files identical"
 
 def getSubnetworks(filename): #Takes in a file and returns a Dict containinng all the subnetworks in the JSON file.
     json_data = open(filename)
@@ -30,6 +30,16 @@ def getSubnetworks(filename): #Takes in a file and returns a Dict containinng al
 
     return Networks
 
+def findSubnetworkByGene(Gene, SubNetworks ): #Takes in a Gene name and a Subnetwork Dictionary, returns all subnetworks containing the gene.
+    inSubNetworks = {}
+
+    for x in SubNetworks:
+        if Gene in SubNetworks[x]:
+            inSubNetworks[x] = SubNetworks[x]
+
+    return inSubNetworks
+
+
 def setdiff(Alpha, Beta): #Takes two Dict containg subnetworks and returns the exclusive subnetworks in Alpha.
     exclusiveNetworks = {}
 
@@ -37,19 +47,27 @@ def setdiff(Alpha, Beta): #Takes two Dict containg subnetworks and returns the e
         isExclusive = 1
         for y in Beta:
             if sorted(Alpha[x]) == sorted(Beta[y]):
-                isExclusive = 1
+                isExclusive = 0
         if isExclusive == 1:
             exclusiveNetworks[x] = Alpha[x]
 
     return exclusiveNetworks
 
+
 def main():
     Tk().withdraw()
-    resultsOne = askopenfilename(title="First Result File to compare",defaultextension=".json")
-    Alpha = getSubnetworks(resultsOne)
+    File1 = askopenfilename(title="First Result File to compare",defaultextension=".json")
+    File2 = askopenfilename(title="First Result File to compare",defaultextension=".json")
 
-    for sub in Alpha:
-        print sorted(Alpha[sub])
+    Alpha = getSubnetworks(File1)
+    Beta = getSubnetworks(File2)
+
+    Alpha['unique'] = 'NOT IN THE SET'
+    Exc1 = setdiff(Alpha,Beta)
+
+
+    print len(Exc1)
+    print Exc1
 
 if __name__ == '__main__':
     main()
