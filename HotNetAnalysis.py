@@ -4,8 +4,6 @@ from tkFileDialog import askopenfilename
 from pprint import pprint
 
 
-Tk().withdraw()
-resultsOne = askopenfilename(title="First Result File to compare",defaultextension=".json")
 #resultsTwo = askopenfilename(title="Second Result File to compare",defaultextension=".json")
 
 #if resultsOne == resultsTwo:
@@ -31,6 +29,22 @@ def getSubnetworks(filename): #Takes in a file and returns a Dict containinng al
     json_data.close()
 
     return Networks
+
+def setdiff(Alpha, Beta): #Takes two Dict containg subnetworks and returns the exclusive subnetworks in Alpha.
+    return 0
+
+def main():
+    Tk().withdraw()
+    resultsOne = askopenfilename(title="First Result File to compare",defaultextension=".json")
+    Alpha = getSubnetworks(resultsOne)
+
+    for sub in Alpha:
+        print Alpha[sub]
+
+if __name__ == '__main__':
+    main()
+
+
 
 
 class Subgraph():
