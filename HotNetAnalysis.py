@@ -41,14 +41,29 @@ def getSubnetworks(filename): #Takes in a file and returns a Dict containinng al
 
 def findSubnetworksByGene(Genes, SubNetworks ): #Takes in a Gene name and a Subnetwork Dictionary, returns all subnetworks containing the gene.
     inSubNetworks = {}
+    #print "FINDING"
+    #print type(Genes)
+    #(nodes, edges) = SubNetworks
 
     for x in SubNetworks:
+        #print x
+        #(nodes,edges) = x
+
+        (nodes,edges) = SubNetworks[x]
+        #print nodes
+
         if isinstance(Genes, str): #Check if single Gene is and subnetwork and return Subnetwork if True.
-            if Genes in SubNetworks[x]:
+            if Genes in nodes:
+                #print "FOUND"
                 inSubNetworks[x] = SubNetworks[x]
         elif isinstance(Genes, list): #Check if all Genes are in subnetwork and return Subnetwork if True.
-            if all(gene in SubNetworks[x] for gene in Genes):
+            if all(gene in nodes for gene in Genes):
+                #print "FOUND"
                 inSubNetworks[x] = SubNetworks[x]
+
+    #print inSubNetworks
+    if not inSubNetworks:
+        print "No Results Found" + "\n"
 
     return inSubNetworks
 
@@ -75,17 +90,19 @@ def returnSymbol(Genes): #Takes in a list of Genes, returning a + or - value dep
 
 def startMenu():
     input = 0
-    while input != '4':
-        print "\n" + "1. Select a JSON File" + "\n" +"2. Select a 2nd JSON File" + "\n" + "3. Search for a Gene(s)" + "\n" + "4. Exit"
+    while input != '2':
+        print "\n"  + "1. Search for a Gene(s)" + "\n" + "2. Exit" + "\n"
         input = raw_input("")
-        if input == '3':
-            temp = raw_input("Enter a List of Genes to Search" + "\n")
+        if input == '1':
+            temp = raw_input("Enter a List of Genes to Search" + "\n" + "\n")
             genes = map(str, temp.split())
             #print genes
             subnetworks = getSubnetworks(File1)
+            #print subnetworks
             results = findSubnetworksByGene(genes, subnetworks)
             for x in results:
-                showGraph(x)
+                #print x
+                showGraph(results[x])
 
 
 
