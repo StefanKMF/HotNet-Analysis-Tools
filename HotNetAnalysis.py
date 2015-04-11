@@ -1,6 +1,7 @@
 #Currently works by comparing the gene sets, doesn't compare the graphes as of yet. Graph comparsion will be a future addition.
 
-import json, difflib
+import json, difflib, csv
+import scipy.io as sio
 import networkx as nx
 import matplotlib.pyplot as plt
 from Tkinter import Tk
@@ -8,6 +9,7 @@ from tkFileDialog import askopenfilename
 from pprint import pprint
 
 File1 = ""
+legend = {}
 
 
 def getSubnetworks(filename): #Takes in a file and returns a Dict containinng all the subnetworks in the JSON file.
@@ -33,13 +35,6 @@ def getSubnetworks(filename): #Takes in a file and returns a Dict containinng al
                     tupleA = substring
                     Networks[('Subnetwork' + str(SubNetworkCounter))] = (substring, edges)
                     SubNetworkCounter += 1
-                # if y =='edges':
-                #     edges = []
-                #     for z in data['subnetworks'][row][x][y]:
-                #         edges.append((str(z['source']),str(z['target'])))
-                #     Edges[('Subnetwork' + str(EdgeCounter))] = edges
-                #     EdgeCounter += 1
-
     json_data.close()
 
     return Networks
@@ -93,38 +88,50 @@ def startMenu():
                 print results[x]
 
 
+
+def showGraph(subnetwork):
+
+    G = nx.Graph()
+    (nodes, edges) = subnetwork
+
+    G.add_edges_from(edges)
+    G.add_nodes_from(nodes)
+    #val_map = legend
+
+
+    for node in G.nodes():
+        G.node[node]['category'] = legend[' ' + node + ' ']
+
+
+    pos = nx.spring_layout(G)
+    values = [legend.get(' ' + node + ' ', 0.0) for node in G.nodes()]
+
+    nx.draw_networkx_nodes(G,pos,node_size=2000,node_color='b')
+    nx.draw_networkx_labels(G,pos,font_size=10,font_family='sans-serif',font_color="w")
+    nx.draw_networkx_edges(G,pos,edge_color='g')    #nx.draw(G,pos)
+
+
+    plt.show()
+
+
 def main():
 
+    #print legend
+    global legend
+    with open('legend.csv',mode='r') as infile:
+        reader = csv.reader(infile)
+        legend = {rows[0]:rows[1] for rows in reader}
 
 
     Tk().withdraw()
     global File1
     File1 = askopenfilename(title="First JSON File.",defaultextension=".json")
-    #File2 = askopenfilename(title="Second Result File to compare.",defaultextension=".json")
 
     Alpha = getSubnetworks(File1)
-    #Beta = getSubnetworks(File2)
 
-    #for x in Alpha:
     x = 'Subnetwork450'
-    G = nx.Graph()
-    print "\n" + x
-    (nodes, edges) = Alpha[x]
+    showGraph(Alpha['Subnetwork450'])
 
-    #for node in nodes:
-    for x in nodes:
-        print x
-    G.add_nodes_from(nodes)
-    G.add_edges_from(edges)
-
-    #node_labels = {node:node for node in G.nodes()};
-    #pos = nx.spring_layout(G)
-    #nx.draw_networkx_labels(G, pos, labels=node_labels)
-    nx.draw(G)
-    plt.show()
-
-        #print Alpha[x]
-        #print "--"*10
     #startMenu()
 
 if __name__ == '__main__':
