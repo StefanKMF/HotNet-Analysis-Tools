@@ -107,7 +107,7 @@ def startMenu():
 
 
 def showGraph(subnetwork):
-
+    plt.figure()
     G = nx.Graph()
     (nodes, edges) = subnetwork
 
@@ -118,10 +118,10 @@ def showGraph(subnetwork):
         G.node[node]['category'] = legend[' ' + node + ' ']
 
     color_map = {'+':'#ff0000','-':'b'}
-    pos = nx.spring_layout(G)
+    pos = nx.spring_layout(G, k=0.10, iterations=20)
 
-    nx.draw(G,pos, node_size=2000,node_color=[color_map[G.node[node]['category']] for node in G])
-    nx.draw_networkx_labels(G,pos,font_size=10,font_family='sans-serif',font_color="w")
+    nx.draw(G,pos=pos,node_size=2000,node_color=[color_map[G.node[node]['category']] for node in G])
+    nx.draw_networkx_labels(G,pos=pos,font_size=10,font_family='sans-serif',font_color="w")
 
     plt.show()
 
