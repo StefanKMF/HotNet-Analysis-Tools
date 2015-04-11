@@ -85,7 +85,7 @@ def startMenu():
             subnetworks = getSubnetworks(File1)
             results = findSubnetworksByGene(genes, subnetworks)
             for x in results:
-                print results[x]
+                showGraph(x)
 
 
 
@@ -96,20 +96,15 @@ def showGraph(subnetwork):
 
     G.add_edges_from(edges)
     G.add_nodes_from(nodes)
-    #val_map = legend
-
 
     for node in G.nodes():
         G.node[node]['category'] = legend[' ' + node + ' ']
 
-
+    color_map = {'+':'#ff0000','-':'b'}
     pos = nx.spring_layout(G)
-    values = [legend.get(' ' + node + ' ', 0.0) for node in G.nodes()]
 
-    nx.draw_networkx_nodes(G,pos,node_size=2000,node_color='b')
+    nx.draw(G,pos, node_size=2000,node_color=[color_map[G.node[node]['category']] for node in G])
     nx.draw_networkx_labels(G,pos,font_size=10,font_family='sans-serif',font_color="w")
-    nx.draw_networkx_edges(G,pos,edge_color='g')    #nx.draw(G,pos)
-
 
     plt.show()
 
@@ -118,7 +113,7 @@ def main():
 
     #print legend
     global legend
-    with open('legend.csv',mode='r') as infile:
+    with open('Legend.csv',mode='r') as infile:
         reader = csv.reader(infile)
         legend = {rows[0]:rows[1] for rows in reader}
 
@@ -129,10 +124,10 @@ def main():
 
     Alpha = getSubnetworks(File1)
 
-    x = 'Subnetwork450'
-    showGraph(Alpha['Subnetwork450'])
+    #x = 'Subnetwork450'
+    #showGraph(Alpha['Subnetwork450'])
 
-    #startMenu()
+    startMenu()
 
 if __name__ == '__main__':
     main()
