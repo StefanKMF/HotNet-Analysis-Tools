@@ -117,7 +117,7 @@ def showGraph(subnetwork):
     for node in G.nodes():
         G.node[node]['category'] = legend[' ' + node + ' ']
 
-    color_map = {'+':'#ff0000','-':'b'}
+    color_map = {'+':'#ff0000','-':'b', '0':'#C0C0C0'}
     pos = nx.spring_layout(G, k=0.10, iterations=20)
 
     nx.draw(G,pos=pos,node_size=2000,node_color=[color_map[G.node[node]['category']] for node in G])
